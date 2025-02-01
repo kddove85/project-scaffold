@@ -1,0 +1,41 @@
+{% templatetag openblock %} load static {% templatetag closeblock %}
+<nav class="navbar navbar-expand-md">
+  <a class="navbar-brand" href="{% templatetag openblock %} url '{{ project_name }}_ui:index' {% templatetag closeblock %}">
+    Home
+  </a>
+  <button class="navbar-toggler border rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
+    <i class="bi bi-list" aria-hidden="true"></i>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarLinks">
+    {% templatetag openblock %} if request.user.is_authenticated {% templatetag closeblock %}
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="d-block py-1 px-2 nav-link auth-link fw-normal" href="/"><i class="bi bi-person-fill pe-1" aria-hidden="true"></i>{% templatetag openvariable %} request.user.get_full_name {% templatetag closevariable %}</a>
+        </li>
+        {% templatetag openblock %} if request.user.is_staff {% templatetag closeblock %}
+        <li class="nav-item">
+          <a class="d-block py-1 px-2 nav-link auth-link fw-normal" href="{% templatetag openblock %} url 'admin:index' {% templatetag closeblock %}"><i class="bi bi-shield-lock pe-1" aria-hidden="true"></i>Admin</a>
+        </li>
+        {% templatetag openblock %} endif {% templatetag closeblock %}
+        <li class="nav-item">
+          <form class="form-inline" action="{% templatetag openvariable %} LOGOUT_URL {% templatetag closevariable %}" method="post">
+            {% templatetag openblock %} csrf_token %}
+            <button type="submit" class="btn nav-link auth-link fw-normal py-1 px-2">
+              <i class="bi bi-door-closed pe-1" aria-hidden="true"></i>Log Out
+            </button>
+          </form>
+        </li>
+      </ul>
+      {% templatetag openblock %} else {% templatetag closeblock %}
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="{% templatetag openvariable %} LOGIN_URL {% templatetag closevariable %}" class="nav-link auth-link fw-normal">
+              <i class="bi bi-door-open pe-1" aria-hidden="true"></i>Log In
+            </a>
+          </li>
+        </ul>
+      {% templatetag openblock %} endif {% templatetag closeblock %}
+    </ul>
+  </div>
+</nav>

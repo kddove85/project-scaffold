@@ -1,0 +1,29 @@
+# Intended for testing the production Docker build on your local machine ONLY
+# Compiles JavaScript bundles and serves it in the Gunicorn deployment
+version: '3'
+
+services:
+  app:
+    build:
+      context: src
+      dockerfile: src/Dockerfile.prod
+    env_file: src/.env
+    ports:
+      - 127.0.0.1:${APP_PORT:-8000}:8000
+    depends_on:
+      - db
+    restart: on-failure
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_USER=postgres
+    ports:
+      - 127.0.0.1:${DB_PORT:-5432}:5432
+    volumes:
+      - postgres-data:/var/lib/pgsql/data
+
+volumes:
+  postgres-data:

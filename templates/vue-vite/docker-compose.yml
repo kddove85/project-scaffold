@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: src
+      args:
+          ENVIRONMENT: DEVELOPMENT
+    env_file: src/.env
+    ports:
+      - 127.0.0.1:${APP_PORT:-8000}:8000
+    volumes:
+      - ./src:/usr/src/app
+    entrypoint: ./docker-entrypoint.sh
+    command: "uvicorn {{ project_name }}.asgi:application --reload --host 0.0.0.0 --port ${APP_PORT:-8000}"
+    depends_on:
+      - db
+      - frontend
+    restart: on-failure
+
+  frontend:
+    build:
+      context: src
+      target: vite-builder
+    volumes:
+      - ./src/assets:/usr/src/app
+      - /usr/src/app/node_modules/
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_USER=postgres
+    ports:
+      - 127.0.0.1:${DB_PORT:-5423}:5432
+    volumes:
+      - postgres-data:/var/lib/pgsql/data
+
+volumes:
+  postgres-data:

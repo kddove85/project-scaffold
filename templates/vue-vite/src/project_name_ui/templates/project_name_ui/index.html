@@ -1,0 +1,47 @@
+{% templatetag openblock %} extends 'base.html' {% templatetag closeblock %}
+{% templatetag openblock %} load django_vite {% templatetag closeblock %}
+
+{% templatetag openblock %} block title {% templatetag closeblock %}{{ project_name }}{% templatetag openblock %} endblock {% templatetag closeblock %}
+
+{% templatetag openblock %} block content {% templatetag closeblock %}
+  <div class="row">
+    {% templatetag openblock %} if user.is_authenticated {% templatetag closeblock %}
+      <h1 class="mb-3">{{ project_name }}</h1>
+      <!-- Javascript disabled -->
+      <noscript>
+        <div class="card">
+          <div class="card-body">
+            <strong>
+              We're sorry but the {{ project_name }} tool doesn't work properly without JavaScript enabled. Please enable it to continue.
+            </strong>
+          </div>
+        </div>
+      </noscript>
+
+      <!-- Javascript enabled, Vue SPA is bootstrapped here -->
+      <div id="app"></div>
+    {% templatetag openblock %} else {% templatetag closeblock %}
+      <div class="px-3">
+        <div class="card px-4">
+          <div class="card-body">
+            <h1 class="display-5 fw-bold fs-2">Welcome to the {{ project_name }} tool</h1>
+            <hr />
+            <a href="{% templatetag openvariable %} LOGIN_URL {% templatetag closevariable %}" class="btn btn-primary" role="button">Log In</a>
+            <a href="{% templatetag openvariable %} REGISTER_URL {% templatetag closevariable %}" class="btn btn-primary" role="button">Register</a>
+          </div>
+        </div>
+      </div>
+    {% templatetag openblock %} endif {% templatetag closeblock %}
+  </div>
+{% templatetag openblock %} endblock {% templatetag closeblock %}
+
+{% templatetag openblock %} block scripts {% templatetag closeblock %}
+  {% templatetag openblock %} if user.is_authenticated {% templatetag closeblock %}
+    {{ csrf|json_script:"csrf" }}
+    {% templatetag openblock %} if ga_measurement {% templatetag closeblock %}
+      {{ ga_measurement|json_script:"ga_measurement" }}
+    {% templatetag openblock %} endif {% templatetag closeblock %}
+    <!-- Vite rendered JS -->
+    {% templatetag openblock %} vite_asset 'src/main.js' {% templatetag closeblock %}
+  {% templatetag openblock %} endif {% templatetag closeblock %}
+{% templatetag openblock %} endblock {% templatetag closeblock %}

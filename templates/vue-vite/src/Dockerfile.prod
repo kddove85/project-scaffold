@@ -1,0 +1,40 @@
+# Stage 1 - Frontend
+FROM node:18-alpine AS vite-builder
+
+ENV NODE_ENV=production
+
+WORKDIR /usr/src/app
+
+COPY assets/package*.json ./
+RUN npm ci --include=dev --no-audit
+
+COPY assets ./
+RUN npm run build
+
+# Stage 2 - Application
+
+FROM python:3.10-slim
+
+ENV PYTHONUNBUFFERED=1
+ENV PIP_ROOT_USER_ACTION=ignore
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /usr/src/app
+
+COPY requirements.prod.txt /tmp/
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r /tmp/requirements.prod.txt
+
+COPY . /usr/src/app/
+RUN rm -rf assets && rm -rf /tmp
+
+COPY --from=webpack-builder /usr/src/app/bundles assets/bundles/
+COPY --from=webpack-builder /usr/src/app/webpack-stats.json assets/
+
+EXPOSE 8000
+
+ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
+
+CMD ["sh", "-c", "gunicorn WEBPACK.asgi:application -k WEBPACK.uvicorn.GunicornUvicornWorker"]
