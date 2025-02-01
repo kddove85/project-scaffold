@@ -1,32 +1,26 @@
-# U-M Django CLI
+# Django CLI
 
-This CLI tool currently generates a standardized Python-based web application with U-M based styling. A project can be generated as a "vanilla" Django-only application or as a monolithic application with Django + Djangorestframework + Vue.js 3 single-page-app configuration.
+This CLI tool currently generates a standardized Python-based web application with styling. A project can be generated as a "vue-vite" Django-only application or as a monolithic application with Django + Djangorestframework + Vue.js 3 single-page-app configuration.
 
 The project includes:
 - Django 4
 - Bootstrap 5.2 + Bootstrap Icons
 - Docker Compose setup with Postgres database
 - Deployment ready Docker build with Uvicorn web server
-- mozilla-django-oidc for SSO with Shibboleth
 - flake8 linting rules
 
 For the Vue.js template, in addition to the above:
 - Vue.js 3
 - Vue Router
 - Pinia for state management
-- TypeScript
 - eslint rules
 - Google Analytics support in Vue.js
-- Webpack-optimized build for production, with minified and compressed asset handling
+- Vite-optimized build for production, with minified and compressed asset handling
 - Multi-stage Docker build
 
 ## Notes
 
-- mozilla-django-oidc is included for SSO support with Shibboleth. Logic is already included to create users based on OIDC claims for first name, last name, and uniqname. Additional examples can be provided if you are mapping UMID or group memberships.
-
 - Github Actions are included for automated linting and vulnerability scanning. Additional examples can be provided for Docker build and push actions to either Dockerhub or Github Container Registry (GHCR).
-
-- Popper.js for Bootstrap is not included. If you need it, [add the relevant CDN](https://getbootstrap.com/docs/5.2/getting-started/download/#cdn-via-jsdelivr) to [base.html](template/src/um_template_ui/templates/base.html).
 
 - There may be more dependencies than needed for your use-case. Remove them from requirements.txt and package.json as necessary. For example, you may not need a centralized store for state management in Vue and Pinia can be removed.
 
